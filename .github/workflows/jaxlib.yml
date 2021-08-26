@@ -1,0 +1,28 @@
+name: Build jaxlib on osx arm64
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        python-version: ['3.8', '3.9']
+
+    steps:
+      - run: |
+        wget https://github.com/google/jax/archive/refs/tags/jaxlib-v0.1.70.tar.gz
+        tar -xvf --strip-components=1 jaxlib-v0.1.70.tar.gz
+        ls
+
+      - uses: actions/setup-python@v2
+        with:
+          python-version: ${{ python-version }}
+          
+      - run: pip install numpy scipy
+
+      - run: python build/build.py --target_cpu osx-arm64
+
+      - uses: actions/upload-artifact@v2
+        with:
+          path: ./wheelhouse/*.whl
