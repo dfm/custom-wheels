@@ -1,9 +1,14 @@
 name: jaxlib / osx-arm64
 
-on: [push, pull_request]
-
+on:
+  release:
+    types:
+      - published
+  pull_request:
+  push:
+    branches: [ main ]
 jobs:
-  jaxlib:
+  build:
     name: jaxlib ${{ matrix.jaxlib-version }} / Python ${{ matrix.python-version }}
     runs-on: macos-latest
     strategy:
@@ -38,4 +43,29 @@ jobs:
 
       - uses: actions/upload-artifact@v2
         with:
+          name: wheels
           path: ./dist/*.whl
+
+  # index:
+  #   needs: [build]
+  #   runs-on: ubuntu-latest
+  #   # if: github.event_name == 'release' && github.event.action == 'published'
+  #   steps:
+  #     - uses: actions/checkout@v2
+
+  #     - uses: actions/checkout@v2
+  #       with:
+  #         ref: gh-pages
+  #         path: output
+
+  #     - uses: actions/download-artifact@v2
+  #       with:
+  #         name: wheels
+  #         path: dist
+
+  #     - name: Install Python
+  #       uses: actions/setup-python@v2
+  #       with:
+  #         python-version: '3.x'
+
+
