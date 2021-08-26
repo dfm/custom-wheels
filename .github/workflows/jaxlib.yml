@@ -58,13 +58,16 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: wheels
-          path: output/jaxlib
+          path: wheels
 
       - run: |
           cd index
           rm -rf .git
           git init .
           git checkout -b index
+
+          rsync -r ../wheels/ jaxlib
+
           git add .
           git -c user.name='gh-actions' -c user.email='gh-actions' commit -m "updating index"
           git push --force https://x-access-token:${GITHUB_TOKEN}@github.com/dfm/custom-wheels index
