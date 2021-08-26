@@ -7,8 +7,7 @@ for root, dirs, files in os.walk("."):
         for f in entries
     )
     with open(os.path.join(root, "index.html"), "w") as f:
-        f.write(f"""
-<html>
+        f.write(f"""<html>
 <head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>
 <body>
 {filelist}
