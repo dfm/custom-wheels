@@ -1,27 +1,38 @@
-name: Build jaxlib on osx arm64
+name: jaxlib / osx-arm64
 
 on: [push, pull_request]
 
 jobs:
-  build:
+  jaxlib:
+    name: jaxlib-${{ matrix.jaxlib-version }}-${{ matrix.python-version }}
     runs-on: macos-latest
     strategy:
       matrix:
+        jaxlib-version: ['v0.1.70']
         python-version: ['3.8', '3.9']
 
     steps:
-      - run: |
-          wget -q https://github.com/google/jax/archive/refs/tags/jaxlib-v0.1.70.tar.gz
-          tar xvf jaxlib-v0.1.70.tar.gz --strip-components=1 -C .
-          ls
+      - name: Fetch JAX source
+        run: |
+          wget -q https://github.com/google/jax/archive/refs/tags/jaxlib-${{ matrix.jaxlib-version }}.tar.gz
+          tar xvf jaxlib-${{ matrix.jaxlib-version }}.tar.gz --strip-components=1 -C .
+          
+      - name: Cache multiple paths
+        uses: actions/cache@v2
+        with:
+          path: '~/bazel-build-cache'
+          key: ${{ runner.os }}-${{ matrix.python-version }}-${{ matrix.jaxlib-version }}
 
-      - uses: actions/setup-python@v2
+      - name: Install Python
+        uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
           
-      - run: pip install numpy scipy
+      - name: Install build dependencies
+        run: pip install numpy scipy
 
-      - run: python build/build.py --target_cpu darwin_arm64
+      - name: Build jaxlib
+        run: python build/build.py --target_cpu darwin_arm64 --bazel_startup_options="--output_base=~/bazel-build-cache"
 
       - uses: actions/upload-artifact@v2
         with:
