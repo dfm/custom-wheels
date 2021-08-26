@@ -52,22 +52,24 @@ jobs:
     # if: github.event_name == 'release' && github.event.action == 'published'
     steps:
       - uses: actions/checkout@v2
-
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
       - run: git clone --single-branch --branch index https://github.com/dfm/custom-wheels index
-
       - uses: actions/download-artifact@v2
         with:
           name: wheels
           path: wheels
-
       - run: |
           cd index
           rm -rf .git
-          git init .
-          git checkout -b index
 
           rsync -r ../wheels/ jaxlib
+          python ../generate_index.py
+          ls
 
+          git init .
+          git checkout -b index
           git add .
           git -c user.name='gh-actions' -c user.email='gh-actions' commit -m "updating index"
           git push --force https://x-access-token:${GITHUB_TOKEN}@github.com/dfm/custom-wheels index
