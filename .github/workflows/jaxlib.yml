@@ -21,7 +21,7 @@ jobs:
           
       - run: pip install numpy scipy
 
-      - run: python build/build.py --target_cpu osx-arm64
+      - run: python build/build.py --target_cpu darwin_arm64
 
       - uses: actions/upload-artifact@v2
         with:
