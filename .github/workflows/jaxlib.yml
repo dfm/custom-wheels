@@ -11,9 +11,9 @@ jobs:
 
     steps:
       - run: |
-        wget https://github.com/google/jax/archive/refs/tags/jaxlib-v0.1.70.tar.gz
-        tar -xvf --strip-components=1 jaxlib-v0.1.70.tar.gz
-        ls
+          wget https://github.com/google/jax/archive/refs/tags/jaxlib-v0.1.70.tar.gz
+          tar -xvf --strip-components=1 jaxlib-v0.1.70.tar.gz
+          ls
 
       - uses: actions/setup-python@v2
         with:
