@@ -13,7 +13,7 @@ jobs:
     runs-on: macos-latest
     strategy:
       matrix:
-        jaxlib-version: ['v0.1.70']
+        jaxlib-version: ['v0.1.71']
         python-version: ['3.8', '3.9']
 
     steps:
