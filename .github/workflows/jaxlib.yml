@@ -15,6 +15,7 @@ jobs:
       matrix:
         jaxlib-version: ['v0.1.71']
         python-version: ['3.8', '3.9']
+        build-number: ['0']
 
     steps:
       - uses: actions/checkout@v2
@@ -31,9 +32,9 @@ jobs:
         uses: actions/cache@v2
         with:
           path: '~/bazel-build-cache'
-          key: ${{ runner.os }}-${{ matrix.python-version }}-${{ matrix.jaxlib-version }}-${{ github.sha }}
+          key: ${{ runner.os }}-${{ matrix.python-version }}-${{ matrix.build-number }}-${{ matrix.jaxlib-version }}-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-${{ matrix.python-version }}-${{ matrix.jaxlib-version }}
+            ${{ runner.os }}-${{ matrix.python-version }}-${{ matrix.build-number }}-${{ matrix.jaxlib-version }}
 
       - name: Install Python
         uses: actions/setup-python@v2
