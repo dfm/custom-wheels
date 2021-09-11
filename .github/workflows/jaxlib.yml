@@ -13,14 +13,19 @@ jobs:
     runs-on: macos-latest
     strategy:
       matrix:
-        jaxlib-version: ['v0.1.70']
+        jaxlib-version: ['v0.1.71']
         python-version: ['3.8', '3.9']
 
     steps:
+      - uses: actions/checkout@v2
+
       - name: Fetch JAX source
         run: |
+          mkdir build
+          cd build
           wget -q https://github.com/google/jax/archive/refs/tags/jaxlib-${{ matrix.jaxlib-version }}.tar.gz
           tar xvf jaxlib-${{ matrix.jaxlib-version }}.tar.gz --strip-components=1 -C .
+          git apply ../jaxlib.patch
           
       - name: Cache Bazel build products
         uses: actions/cache@v2
@@ -41,12 +46,14 @@ jobs:
           python -m pip install numpy scipy wheel future six
 
       - name: Build jaxlib
-        run: python build/build.py --target_cpu darwin_arm64 --bazel_startup_options="--output_base=~/bazel-build-cache"
+        run: |
+          cd build
+          python build/build.py --target_cpu darwin_arm64 --bazel_startup_options="--output_base=~/bazel-build-cache"
 
       - uses: actions/upload-artifact@v2
         with:
           name: wheels
-          path: ./dist/*.whl
+          path: ./build/dist/*.whl
 
   index:
     needs: [build]

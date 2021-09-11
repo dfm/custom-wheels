@@ -1,0 +1,50 @@
+diff --git a/WORKSPACE b/WORKSPACE
+index 2761b08e..c2a0059d 100644
+--- a/WORKSPACE
++++ b/WORKSPACE
+@@ -12,6 +12,8 @@ http_archive(
+     urls = [
+         "https://github.com/tensorflow/tensorflow/archive/b5b1ff47ad250c3e38dcadef5f6bc414b0a533ee.tar.gz",
+     ],
++    patches = ["//jaxlib:darwin_arm64.patch"],
++    patch_args = ["-p1"],
+ )
+
+ # For development, one can use a local TF repository instead.
+diff --git a/jaxlib/darwin_arm64.patch b/jaxlib/darwin_arm64.patch
+new file mode 100644
+index 00000000..97c83682
+--- /dev/null
++++ b/jaxlib/darwin_arm64.patch
+@@ -0,0 +1,31 @@
++diff --git a/third_party/llvm/workspace.bzl b/third_party/llvm/workspace.bzl
++index 17a6f54d46d..81bda67677e 100644
++--- a/third_party/llvm/workspace.bzl
+++++ b/third_party/llvm/workspace.bzl
++@@ -15,5 +15,6 @@ def repo(name):
++             "https://storage.googleapis.com/mirror.tensorflow.org/github.com/llvm/llvm-project/archive/{commit}.tar.gz".format(commit = LLVM_COMMIT),
++             "https://github.com/llvm/llvm-project/archive/{commit}.tar.gz".format(commit = LLVM_COMMIT),
++         ],
+++        patch_file = "//third_party/llvm:darwin_arm64.patch",
++         build_file = "//third_party/llvm:BUILD.bazel",
++     )
++diff --git a/third_party/llvm/darwin_arm64.patch b/third_party/llvm/darwin_arm64.patch
++new file mode 100644
++index 00000000000..2883f1a8947
++--- /dev/null
+++++ b/third_party/llvm/darwin_arm64.patch
++@@ -0,0 +1,14 @@
+++diff --git a/utils/bazel/llvm-project-overlay/llvm/config.bzl b/utils/bazel/llvm-project-overlay/llvm/config.bzl
+++index 514f79bcf2b6..96525e14f566 100644
+++--- a/utils/bazel/llvm-project-overlay/llvm/config.bzl
++++++ b/utils/bazel/llvm-project-overlay/llvm/config.bzl
+++@@ -75,7 +75,8 @@ os_defines = select({
+++ # TODO: We should split out host vs. target here.
+++ llvm_config_defines = os_defines + select({
+++     "@bazel_tools//src/conditions:windows": native_arch_defines("X86", "x86_64-pc-win32"),
+++-    "@bazel_tools//src/conditions:darwin": native_arch_defines("X86", "x86_64-unknown-darwin"),
++++    "@bazel_tools//src/conditions:darwin": native_arch_defines("AArch64", "arm64-apple-darwin"),
++++    # "@bazel_tools//src/conditions:darwin": native_arch_defines("X86", "x86_64-unknown-darwin"),
+++     "@bazel_tools//src/conditions:linux_aarch64": native_arch_defines("AArch64", "aarch64-unknown-linux-gnu"),
+++     "//conditions:default": native_arch_defines("X86", "x86_64-unknown-linux-gnu"),
+++ }) + [
