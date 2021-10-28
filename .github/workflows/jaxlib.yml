@@ -13,7 +13,7 @@ jobs:
     runs-on: macos-10.15
     strategy:
       matrix:
-        jaxlib-version: ['v0.1.73']
+        jaxlib-version: ['v0.1.74']
         python-version: ['3.8', '3.9']
         build-number: ['0']
 
@@ -24,9 +24,11 @@ jobs:
         run: |
           mkdir build
           cd build
-          wget -q https://github.com/google/jax/archive/refs/tags/jaxlib-${{ matrix.jaxlib-version }}.tar.gz
-          tar xf jaxlib-${{ matrix.jaxlib-version }}.tar.gz --strip-components=1 -C .
-          git apply ../jaxlib-v0.1.73.patch
+          wget -q https://github.com/dfm/jax/archive/refs/heads/darwin-arm64.tar.gz
+          tar xf darwin-arm64.tar.gz --strip-components=1 -C .
+          # wget -q https://github.com/google/jax/archive/refs/tags/jaxlib-${{ matrix.jaxlib-version }}.tar.gz
+          # tar xf jaxlib-${{ matrix.jaxlib-version }}.tar.gz --strip-components=1 -C .
+          # git apply ../jaxlib-v0.1.73.patch
           
       - name: Cache Bazel build products
         uses: actions/cache@v2
