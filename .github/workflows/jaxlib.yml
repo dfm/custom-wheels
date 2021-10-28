@@ -13,7 +13,7 @@ jobs:
     runs-on: macos-latest
     strategy:
       matrix:
-        jaxlib-version: ['v0.1.71']
+        jaxlib-version: ['v0.1.73']
         python-version: ['3.8', '3.9']
         build-number: ['0']
 
@@ -26,7 +26,7 @@ jobs:
           cd build
           wget -q https://github.com/google/jax/archive/refs/tags/jaxlib-${{ matrix.jaxlib-version }}.tar.gz
           tar xf jaxlib-${{ matrix.jaxlib-version }}.tar.gz --strip-components=1 -C .
-          git apply ../jaxlib.patch
+          git apply ../jaxlib-v0.1.73.patch
           
       - name: Cache Bazel build products
         uses: actions/cache@v2
